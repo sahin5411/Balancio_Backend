@@ -1,0 +1,86 @@
+const express = require('express');
+const Category = require('../models/Category');
+const auth = require('../middleware/auth');
+const router = express.Router();
+
+// Get all categories
+router.get('/', auth, async (req, res) => {
+  try {
+    const categories = await Category.find({ userId: req.userId });
+    res.json(categories);
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    res.status(500).json({ message: 'Failed to fetch categories' });
+  }
+});
+
+// Create category
+router.post('/', auth, async (req, res) => {
+  try {
+    const { name, type, color, icon } = req.body;
+    
+    if (!name || !type) {
+      return res.status(400).json({ message: 'Name and type are required' });
+    }
+    
+    if (!['income', 'expense'].includes(type)) {
+      return res.status(400).json({ message: 'Type must be either income or expense' });
+    }
+    
+    const existingCategory = await Category.findOne({ name, userId: req.userId });
+    if (existingCategory) {
+      return res.status(409).json({ message: 'Category with this name already exists' });
+    }
+    
+    const category = new Category({ ...req.body, userId: req.userId });
+    await category.save();
+    res.status(201).json(category);
+  } catch (error) {
+    console.error('Error creating category:', error);
+    res.status(500).json({ message: 'Failed to create category' });
+  }
+});
+
+// Update category
+router.put('/:id', auth, async (req, res) => {
+  try {
+    const category = await Category.findOneAndUpdate(
+      { _id: req.params.id, userId: req.userId },
+      req.body,
+      { new: true }
+    );
+    
+    if (!category) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+    
+    res.json(category);
+  } catch (error) {
+    console.error('Error updating category:', error);
+    if (error.name === 'CastError') {
+      return res.status(400).json({ message: 'Invalid category ID' });
+    }
+    res.status(500).json({ message: 'Failed to update category' });
+  }
+});
+
+// Delete category
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    const category = await Category.findOneAndDelete({ _id: req.params.id, userId: req.userId });
+    
+    if (!category) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+    
+    res.json({ message: 'Category deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting category:', error);
+    if (error.name === 'CastError') {
+      return res.status(400).json({ message: 'Invalid category ID' });
+    }
+    res.status(500).json({ message: 'Failed to delete category' });
+  }
+});
+
+module.exports = router;
