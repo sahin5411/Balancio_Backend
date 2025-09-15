@@ -34,9 +34,9 @@ const router = express.Router();
  *                     type: boolean
  *                   totalIncome:
  *                     type: number
- *                   totalExpense:
+ *                   totalExpenses:
  *                     type: number
- *                   netIncome:
+ *                   netSavings:
  *                     type: number
  *       500:
  *         description: Internal server error
