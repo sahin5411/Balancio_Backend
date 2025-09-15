@@ -9,6 +9,18 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String },
   googleId: { type: String },
   githubId: { type: String },
+  monthlyBudget: {
+    amount: { type: Number, default: 0 },
+    currency: { type: String, default: 'USD' },
+    alertThresholds: {
+      warning: { type: Number, default: 80 }, // 80% of budget
+      critical: { type: Number, default: 95 } // 95% of budget
+    },
+    lastAlertSent: {
+      warning: { type: Date },
+      critical: { type: Date }
+    }
+  },
   settings: {
     emailNotifications: { type: Boolean, default: true },
     budgetAlerts: { type: Boolean, default: true },

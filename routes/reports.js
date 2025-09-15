@@ -6,7 +6,41 @@ const User = require('../models/User');
 const fs = require('fs');
 const router = express.Router();
 
-// Get monthly reports list
+/**
+ * @swagger
+ * /api/reports/monthly:
+ *   get:
+ *     summary: Get list of monthly reports for the authenticated user
+ *     tags: [Reports]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of monthly reports
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   month:
+ *                     type: string
+ *                   year:
+ *                     type: number
+ *                   monthNumber:
+ *                     type: number
+ *                   hasData:
+ *                     type: boolean
+ *                   totalIncome:
+ *                     type: number
+ *                   totalExpense:
+ *                     type: number
+ *                   netIncome:
+ *                     type: number
+ *       500:
+ *         description: Internal server error
+ */
 router.get('/monthly', auth, async (req, res) => {
   try {
     const reports = [];
@@ -34,7 +68,44 @@ router.get('/monthly', auth, async (req, res) => {
   }
 });
 
-// Download monthly report
+/**
+ * @swagger
+ * /api/reports/monthly/{year}/{month}/download:
+ *   get:
+ *     summary: Download monthly report for a specific year and month
+ *     tags: [Reports]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: year
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Year of the report
+ *       - in: path
+ *         name: month
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Month of the report (1-12)
+ *     responses:
+ *       200:
+ *         description: Report file download
+ *         content:
+ *           application/pdf:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *           application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       404:
+ *         description: No data available for this month
+ *       500:
+ *         description: Internal server error
+ */
 router.get('/monthly/:year/:month/download', auth, async (req, res) => {
   try {
     const { year, month } = req.params;
