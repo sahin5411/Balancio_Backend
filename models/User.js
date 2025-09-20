@@ -9,6 +9,8 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String },
   googleId: { type: String },
   githubId: { type: String },
+  resetPasswordToken: { type: String },
+  resetPasswordExpires: { type: Date },
   monthlyBudget: {
     amount: { type: Number, default: 0 },
     currency: { type: String, default: 'USD' },
