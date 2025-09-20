@@ -144,8 +144,14 @@ const options = {
 
 const specs = swaggerJsdoc(options);
 
+// CORS configuration - Allow all origins
+app.use(cors({
+  origin: '*',  // Allow all origins
+  credentials: true,
+  optionsSuccessStatus: 200
+}));
+
 // Middleware
-app.use(cors());
 app.use(express.json());
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your-secret-key',
