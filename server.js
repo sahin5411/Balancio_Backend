@@ -1,12 +1,12 @@
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const passport = require('passport');
 const session = require('express-session');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const { scheduleMonthlyReports } = require('./scheduler/monthlyReportScheduler');
+const { connectToDatabase } = require('./utils/db');
 
 const app = express();
 
@@ -159,9 +159,10 @@ app.use(passport.session());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+connectToDatabase().catch(err => {
+  console.error('Failed to connect to database:', err);
+  process.exit(1);
+});
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
