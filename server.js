@@ -10,6 +10,13 @@ const { connectToDatabase } = require('./utils/db');
 
 const app = express();
 
+// CORS configuration - Allow all origins (must be before other middleware)
+app.use(cors({
+  origin: '*',  // Allow all origins
+  credentials: true,
+  optionsSuccessStatus: 200
+}));
+
 // Swagger definition
 const swaggerDefinition = {
   openapi: '3.0.0',
@@ -143,13 +150,6 @@ const options = {
 };
 
 const specs = swaggerJsdoc(options);
-
-// CORS configuration - Allow all origins
-app.use(cors({
-  origin: '*',  // Allow all origins
-  credentials: true,
-  optionsSuccessStatus: 200
-}));
 
 // Middleware
 app.use(express.json());

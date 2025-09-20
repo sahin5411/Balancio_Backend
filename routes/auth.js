@@ -15,9 +15,13 @@ router.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
   
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.header('Access-Control-Max-Age', '86400');
     res.sendStatus(200);
     return;
   }
@@ -451,7 +455,7 @@ router.post('/forgot-password', async (req, res) => {
               
               <p style="color: #6b7280; font-size: 14px; line-height: 1.5; margin: 32px 0 0 0; text-align: center;">This link will expire in 1 hour. If you didn't request this, please ignore this email.</p>
               
-              <p style="color: #6b7280; font-size: 12px; line-height: 1.5; margin: 16px 0 0 0; text-align: center;">If the button above doesn't work, copy and paste this link into your browser:<br>${resetUrl}</p>
+              <p style="color: #9ca3af; font-size: 12px; line-height: 1.5; margin: 16px 0 0 0; text-align: center;">If the button above doesn't work, copy and paste this link into your browser:<br>${resetUrl}</p>
             </div>
             
             <!-- Footer -->
