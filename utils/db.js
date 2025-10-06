@@ -22,10 +22,7 @@ const connectToDatabase = async () => {
       // Serverless-specific options
       serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
       socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-      bufferMaxEntries: 0,
       bufferCommands: false,
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
     });
 
     console.log('MongoDB connected successfully');
