@@ -10,36 +10,13 @@ const { connectToDatabase } = require('./utils/db');
 
 const app = express();
 
-// CORS configuration - Allow specific origins including vercel.app domains
-const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    // Allow localhost requests (for development)
-    if (origin.startsWith('http://localhost') || origin.startsWith('https://localhost')) {
-      return callback(null, true);
-    }
-    
-    // Allow requests from vercel.app domains (for deployment)
-    if (origin.includes('.vercel.app')) {
-      return callback(null, true);
-    }
-    
-    // Specifically allow balancio-backend.vercel.app
-    if (origin === 'https://balancio-backend.vercel.app') {
-      return callback(null, true);
-    }
-    
-    // For development, you might want to allow all origins
-    // Remove this in production
-    return callback(null, true);
-  },
+// CORS configuration - Allow all origins (useful for development)
+// WARNING: Restrict this in production for security reasons
+app.use(cors({
+  origin: '*',  // Allow all origins
   credentials: true,
   optionsSuccessStatus: 200
-};
-
-app.use(cors(corsOptions));
+}));
 
 // Swagger definition
 const swaggerDefinition = {
