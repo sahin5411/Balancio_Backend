@@ -190,7 +190,7 @@ passport.deserializeUser(async (id, done) => {
  *       500:
  *         description: Internal server error
  */
-router.post('/register', async (req, res) => {
+router.post('/signup', async (req, res) => {
   try {
     const { email, password, name } = req.body;
     
