@@ -165,23 +165,30 @@ app.use(passport.session());
 // Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
-// Database connection
-connectToDatabase().catch(err => {
-  console.error('Failed to connect to database:', err);
-  process.exit(1);
-});
+// Database connection - properly await the connection before starting the server
+const startServer = async () => {
+  try {
+    await connectToDatabase();
+    console.log('Database connected successfully');
+    
+    // Routes
+    app.use('/api/auth', require('./routes/auth'));
+    app.use('/api/transactions', require('./routes/transactions'));
+    app.use('/api/categories', require('./routes/categories'));
+    app.use('/api/reports', require('./routes/reports'));
+    app.use('/api/users', require('./routes/users'));
+    app.use('/api/notifications', require('./routes/notifications'));
+    app.use('/api/test', require('./routes/test'));
+    
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+      scheduleMonthlyReports();
+    });
+  } catch (err) {
+    console.error('Failed to connect to database:', err);
+    process.exit(1);
+  }
+};
 
-// Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/transactions', require('./routes/transactions'));
-app.use('/api/categories', require('./routes/categories'));
-app.use('/api/reports', require('./routes/reports'));
-app.use('/api/users', require('./routes/users'));
-app.use('/api/notifications', require('./routes/notifications'));
-app.use('/api/test', require('./routes/test'));
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  scheduleMonthlyReports();
-});
+startServer();

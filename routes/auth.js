@@ -36,9 +36,6 @@ passport.use(new GoogleStrategy({
   callbackURL: '/api/auth/google/callback'
 }, async (accessToken, refreshToken, profile, done) => {
   try {
-    // Ensure database connection
-    await connectToDatabase();
-    
     let user = await User.findOne({ googleId: profile.id });
     
     if (!user) {
@@ -80,9 +77,6 @@ passport.use(new GitHubStrategy({
   callbackURL: '/api/auth/github/callback'
 }, async (accessToken, refreshToken, profile, done) => {
   try {
-    // Ensure database connection
-    await connectToDatabase();
-    
     let user = await User.findOne({ githubId: profile.id });
     
     if (!user) {
@@ -125,9 +119,6 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
   try {
-    // Ensure database connection
-    await connectToDatabase();
-    
     const user = await User.findById(id);
     done(null, user);
   } catch (error) {
@@ -201,9 +192,6 @@ passport.deserializeUser(async (id, done) => {
  */
 router.post('/register', async (req, res) => {
   try {
-    // Ensure database connection
-    await connectToDatabase();
-    
     const { email, password, name } = req.body;
     
     if (!email || !password || !name) {
@@ -322,9 +310,6 @@ router.post('/register', async (req, res) => {
  */
 router.post('/login', async (req, res) => {
   try {
-    // Ensure database connection
-    await connectToDatabase();
-    
     const { email, password } = req.body;
     
     if (!email || !password) {
@@ -391,9 +376,6 @@ router.post('/login', async (req, res) => {
  */
 router.post('/forgot-password', async (req, res) => {
   try {
-    // Ensure database connection
-    await connectToDatabase();
-    
     const { email } = req.body;
     
     if (!email) {
@@ -519,9 +501,6 @@ router.post('/forgot-password', async (req, res) => {
  */
 router.post('/reset-password', async (req, res) => {
   try {
-    // Ensure database connection
-    await connectToDatabase();
-    
     const { token, password } = req.body;
     
     if (!token || !password) {
